@@ -5,7 +5,7 @@ class ruby (
   $rubygems_package_version = $ruby::params::rubygems_package_version,
   $ruby_gems                = $ruby::params::ruby_gems,
   $gem_home                 = $ruby::params::gem_home,
-  $gem_path                 = $ruby::params::gem_path,
+  $gem_path                 = [],
 
 ) inherits ruby::params {
 
@@ -54,6 +54,8 @@ class ruby (
 
   #-----------------------------------------------------------------------------
   # Configuration
+
+  $ruby_full_path = flatten([ $ruby::params::gem_home, $gem_path ])
 
   if $ruby_environment {
     file { 'ruby_environment':

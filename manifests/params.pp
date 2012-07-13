@@ -17,7 +17,6 @@ class ruby::params {
       $rubygems_package_version = '1.8.15-1'
 
       $gem_home                 = '/var/lib/gems/1.8'
-      $gem_path                 = [ '/var/lib/gems/1.8' ]
     }
     redhat, centos: {}
   }
