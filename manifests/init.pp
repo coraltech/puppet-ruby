@@ -55,7 +55,7 @@ class ruby (
   #-----------------------------------------------------------------------------
   # Configuration
 
-  $ruby_full_path = flatten([ $ruby::params::gem_home, $gem_path ])
+  $gem_full_path = flatten([ $ruby::params::gem_home, $gem_path ])
 
   if $ruby_environment {
     file { 'ruby_environment':
