@@ -1,6 +1,8 @@
 
 class ruby::params {
 
+  include ruby::default
+
   #-----------------------------------------------------------------------------
   # General configurations
 
