@@ -1,0 +1,5 @@
+{
+  "ruby_ensure" : "present",
+  "ruby_rubygems_ensure" : "present",
+  "ruby_gems" : []
+}

@@ -1,25 +1,24 @@
 
 class ruby (
 
-  $ruby_package_version     = $ruby::params::ruby_package_version,
-  $rubygems_package_version = $ruby::params::rubygems_package_version,
-  $ruby_gems                = $ruby::params::ruby_gems,
-  $gem_home                 = $ruby::params::gem_home,
-  $gem_path                 = [],
+  $package                   = $ruby::params::os_ruby_package,
+  $ensure                    = $ruby::params::ruby_ensure,
+  $rubygems_package          = $ruby::params::os_rubygems_package,
+  $rubygems_ensure           = $ruby::params::rubygems_ensure,
+  $ruby_gems                 = $ruby::params::ruby_gems,
+  $gem_home                  = $ruby::params::os_gem_home,
+  $gem_path                  = $ruby::params::os_gem_path,
+  $vagrant_environment       = $ruby::params::os_vagrant_environment,
+  $ruby_environment          = $ruby::params::os_ruby_environment,
+  $ruby_environment_template = $ruby::params::os_ruby_environment_template,
 
 ) inherits ruby::params {
-
-  $vagrant_environment      = $ruby::params::vagrant_environment
-  $ruby_environment         = $ruby::params::ruby_environment
-
-  $ruby_package_name        = $ruby::params::ruby_package_name
-  $rubygems_package_name    = $ruby::params::rubygems_package_name
 
   #-----------------------------------------------------------------------------
   # Installation
 
   if $vagrant_environment {
-    file { 'vagrant_environment':
+    file { 'vagrant-environment':
       path   => $vagrant_environment,
       ensure => 'absent',
     }
@@ -27,27 +26,27 @@ class ruby (
 
   #---
 
-  if ! $ruby_package_name or ! $ruby_package_version {
+  if ! ( $package and $ensure ) {
     fail('Ruby package name and version must be defined')
   }
   package { 'ruby':
-    name   => $ruby_package_name,
-    ensure => $ruby_package_version,
+    name   => $package,
+    ensure => $ensure,
   }
 
-  if ! $rubygems_package_name or ! $rubygems_package_version {
+  if ! ( $rubygems_package and $rubygems_ensure ) {
     fail('Rubygems package name and version must be defined')
   }
   package { 'rubygems':
-    name    => $rubygems_package_name,
-    ensure  => $rubygems_package_version,
+    name    => $rubygems_package,
+    ensure  => $rubygems_ensure,
     require => Package['ruby'],
   }
 
   #---
 
   package { $ruby_gems:
-    ensure   => 'present',
+    ensure   => $rubygems_ensure,
     provider => 'gem',
     require  => Package['rubygems'],
   }
@@ -55,18 +54,17 @@ class ruby (
   #-----------------------------------------------------------------------------
   # Configuration
 
-  $gem_full_path = flatten([ $ruby::params::gem_home, $gem_path ])
+  $gem_full_path = flatten([ $gem_home, $gem_path ])
 
   if $ruby_environment {
-    file { 'ruby_environment':
+    file { 'ruby-environment':
       path    => $ruby_environment,
-      ensure  => 'present',
       require => Package['rubygems'],
-      content => template('ruby/ruby.sh.erb'),
+      content => template($ruby_environment_template),
     }
   }
 
   #-----------------------------------------------------------------------------
 
-  File['vagrant_environment'] -> Package['ruby']
+  File['vagrant-environment'] -> Package['ruby']
 }

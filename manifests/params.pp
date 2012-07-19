@@ -2,22 +2,37 @@
 class ruby::params {
 
   #-----------------------------------------------------------------------------
+  # General configurations
 
-  $ruby_gems = []
+  if $::hiera_exists {
+    $ruby_ensure     = hiera('ruby_ensure', $ruby::default::ruby_ensure)
+    $rubygems_ensure = hiera('ruby_rubygems_ensure', $ruby::default::rubygems_ensure)
+    $ruby_gems       = hiera('ruby_gems', $ruby::default::ruby_gems)
+  }
+  else {
+    $ruby_ensure     = $ruby::default::ruby_ensure
+    $rubygems_ensure = $ruby::default::rubygems_ensure
+    $ruby_gems       = $ruby::default::ruby_gems
+  }
+
+  #-----------------------------------------------------------------------------
+  # Operating system specific configurations
 
   case $::operatingsystem {
     debian, ubuntu: {
-      $vagrant_environment      = '/etc/profile.d/vagrant_ruby.sh'
-      $ruby_environment         = '/etc/profile.d/ruby.sh'
+      $os_ruby_package              = 'ruby'
+      $os_rubygems_package          = 'rubygems'
 
-      $ruby_package_name        = 'ruby'
-      $ruby_package_version     = '4.8'
+      $os_vagrant_environment       = '/etc/profile.d/vagrant_ruby.sh'
+      $os_ruby_environment          = '/etc/profile.d/ruby.sh'
 
-      $rubygems_package_name    = 'rubygems'
-      $rubygems_package_version = '1.8.15-1'
+      $os_ruby_environment_template = 'ruby/ruby.sh.erb'
 
-      $gem_home                 = '/var/lib/gems/1.8'
+      $os_gem_home                  = '/var/lib/gems/1.8'
+      $os_gem_path                  = []
     }
-    redhat, centos: {}
+    default: {
+      fail("The ruby module is not currently supported on ${::operatingsystem}")
+    }
   }
 }
