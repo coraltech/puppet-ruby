@@ -6,7 +6,7 @@ class ruby::params {
   #-----------------------------------------------------------------------------
   # General configurations
 
-  if $::hiera_exists {
+  if $::hiera_ready {
     $ruby_ensure     = hiera('ruby_ensure', $ruby::default::ruby_ensure)
     $rubygems_ensure = hiera('ruby_rubygems_ensure', $ruby::default::rubygems_ensure)
     $ruby_gems       = hiera('ruby_gems', $ruby::default::ruby_gems)
