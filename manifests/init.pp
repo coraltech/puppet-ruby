@@ -5,6 +5,7 @@ class ruby (
   $ensure                    = $ruby::params::ruby_ensure,
   $rubygems_package          = $ruby::params::os_rubygems_package,
   $rubygems_ensure           = $ruby::params::rubygems_ensure,
+  $ruby_git_package          = $ruby::params::os_ruby_git_package,
   $ruby_gems                 = $ruby::params::ruby_gems,
   $gem_home                  = $ruby::params::os_gem_home,
   $gem_path                  = $ruby::params::os_gem_path,
@@ -45,10 +46,20 @@ class ruby (
 
   #---
 
-  package { $ruby_gems:
-    ensure   => $rubygems_ensure,
-    provider => 'gem',
-    require  => Package['rubygems'],
+  if defined(Class['git']) and $ruby_git_package {
+    package { 'ruby-git':
+      name     => $ruby_git_package,
+      ensure   => $rubygems_ensure,
+      require  => Package['rubygems'],
+    }
+  }
+
+  if ! empty($ruby_gems) {
+    package { $ruby_gems:
+      ensure   => $rubygems_ensure,
+      provider => 'gem',
+      require  => Package['rubygems'],
+    }
   }
 
   #-----------------------------------------------------------------------------

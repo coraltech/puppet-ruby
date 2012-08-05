@@ -24,6 +24,7 @@ class ruby::params {
     debian, ubuntu: {
       $os_ruby_package              = 'ruby'
       $os_rubygems_package          = 'rubygems'
+      $os_ruby_git_package          = 'ruby-git'
 
       $os_vagrant_environment       = '/etc/profile.d/vagrant_ruby.sh'
       $os_ruby_environment          = '/etc/profile.d/ruby.sh'
