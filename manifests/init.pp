@@ -1,17 +1,17 @@
 
 class ruby (
 
-  $package                   = $ruby::params::os_ruby_package,
-  $ensure                    = $ruby::params::ruby_ensure,
-  $rubygems_package          = $ruby::params::os_rubygems_package,
+  $package                   = $ruby::params::package,
+  $ensure                    = $ruby::params::ensure,
+  $rubygems_package          = $ruby::params::rubygems_package,
   $rubygems_ensure           = $ruby::params::rubygems_ensure,
-  $ruby_git_package          = $ruby::params::os_ruby_git_package,
-  $ruby_gems                 = $ruby::params::ruby_gems,
-  $gem_home                  = $ruby::params::os_gem_home,
-  $gem_path                  = $ruby::params::os_gem_path,
-  $vagrant_environment       = $ruby::params::os_vagrant_environment,
-  $ruby_environment          = $ruby::params::os_ruby_environment,
-  $ruby_environment_template = $ruby::params::os_ruby_environment_template,
+  $git_package               = $ruby::params::git_package,
+  $gems                      = $ruby::params::gems,
+  $gem_home                  = $ruby::params::gem_home,
+  $gem_path                  = $ruby::params::gem_path,
+  $vagrant_environment       = $ruby::params::vagrant_environment,
+  $environment               = $ruby::params::environment,
+  $environment_template      = $ruby::params::environment_template,
 
 ) inherits ruby::params {
 
@@ -46,16 +46,16 @@ class ruby (
 
   #---
 
-  if defined(Class['git']) and $ruby_git_package {
+  if defined(Class['git']) and $git_package {
     package { 'ruby-git':
-      name     => $ruby_git_package,
+      name     => $git_package,
       ensure   => $rubygems_ensure,
       require  => Package['rubygems'],
     }
   }
 
-  if ! empty($ruby_gems) {
-    package { $ruby_gems:
+  if ! empty($gems) {
+    package { $gems:
       ensure   => $rubygems_ensure,
       provider => 'gem',
       require  => Package['rubygems'],
@@ -67,11 +67,11 @@ class ruby (
 
   $gem_full_path = flatten([ $gem_home, $gem_path ])
 
-  if $ruby_environment {
+  if $environment {
     file { 'ruby-environment':
-      path    => $ruby_environment,
+      path    => $environment,
       require => Package['rubygems'],
-      content => template($ruby_environment_template),
+      content => template($environment_template),
     }
   }
 
