@@ -50,7 +50,7 @@ class ruby (
     package { 'ruby-git':
       name     => $git_package,
       ensure   => $rubygems_ensure,
-      require  => Package['rubygems'],
+      require  => [ Class['git'], Package['rubygems'] ],
     }
   }
 
