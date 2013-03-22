@@ -7,3 +7,5 @@ project_page 'https://github.com/coraltech/puppet-ruby.git'
 source 'git://github.com/coraltech/puppet-ruby.git'
 summary 'Install, configure, and manage the Ruby language'
 description 'Install, configure, and manage the Ruby language and related libraries.'
+
+dependency 'coraltech/puppet-global', '>= 0.0.1'
